@@ -52,6 +52,18 @@ app.get('/', function(req, res){
     })
 })
 
+app.post('/users/add', function (req, res) {
+    var newUser = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email
+    }
+
+    console.log(newUser);
+    
+    
+})
+
 app.listen(3000, function () {
     console.log('Server Started on Port 3000...');
     
