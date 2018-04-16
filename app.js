@@ -26,6 +26,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 // set static path
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Global vars
+app.use(function (req, res, next) {
+    res.locals.errors = null;
+    next();
+})
+
 // Express Validator Middleware
 app.use(expressValidator({
     errorFormatter: function (param, msg, value) {
@@ -73,15 +79,30 @@ app.get('/', function(req, res){
 })
 
 app.post('/users/add', function (req, res) {
-    var newUser = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email
-    }
 
-    console.log(newUser);
-    
-    
+    req.checkBody('firstName', 'First Name is Required').notEmpty();
+    req.checkBody('lastName', 'Last Name is Required').notEmpty();
+    req.checkBody('email', 'Email is Required').notEmpty();
+
+    var errors = req.validationErrors();
+
+    if(errors){
+        res.render('index', {
+            title: 'Customers',
+            users: users,
+            errors: errors
+    })
+        
+    } else {
+            var newUser = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email
+        }
+
+        console.log('SUCCESS');
+        
+    }
 })
 
 app.listen(3000, function () {
